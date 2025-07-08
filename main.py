@@ -3,7 +3,8 @@
 # © 2025 berriz44. All rights reserved.
 
 
-import argparse, json, platformdirs, os, pathlib
+import argparse, json, platformdirs, os, pathlib, colorama
+colorama.init()
 def touch(fpath: os.PathLike):
     os.close(os.open(fpath, os.O_CREAT | os.O_WRONLY, 0o664))
 def remove_items_by_value(d: dict, predicate) -> None:
