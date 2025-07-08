@@ -1,0 +1,40 @@
+name: Build Python app with PyInstaller
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Create virtual environment
+        run: python -m venv venv
+
+      - name: Activate venv and install dependencies
+        run: |
+          source venv/bin/activate
+          python -m pip install --upgrade pip
+          pip install pyinstaller
+          pip install -r requirements.txt
+
+      - name: Build executable with PyInstaller
+        run: |
+          source venv/bin/activate
+          pyinstaller --onefile your_script.py --icon=tootdo.ico --name=tootdo
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-executable
+          path: dist/
