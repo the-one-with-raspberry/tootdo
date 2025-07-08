@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -23,7 +23,7 @@ jobs:
 
       - name: Activate venv and install dependencies
         run: |
-          source venv/bin/activate
+          .\venv\Scripts\Activate.ps1
           python -m pip install --upgrade pip
           pip install pyinstaller
           pip install -r requirements.txt
