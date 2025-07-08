@@ -30,7 +30,7 @@ jobs:
 
       - name: Build executable with PyInstaller
         run: |
-          source venv/bin/activate
+          .\venv\Scripts\Activate.ps1
           pyinstaller --onefile main.py --icon=tootdo.ico --name=tootdo
 
       - name: Upload artifact
