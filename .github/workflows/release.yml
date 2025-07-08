@@ -1,0 +1,145 @@
+name: Build Python app with PyInstaller
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag name for the release'
+        required: true
+      body:
+        description: 'Release body'
+        required: true
+      release-name:
+        description: 'Release name'
+        required: true
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Create virtual environment
+        run: python -m venv venv
+
+      - name: Activate venv and install dependencies
+        run: |
+          .\venv\Scripts\Activate.ps1
+          python -m pip install --upgrade pip
+          pip install pyinstaller
+          pip install -r requirements.txt
+
+      - name: Build executable with PyInstaller
+        run: |
+          source venv/bin/activate
+          pyinstaller --onefile main.py --icon=tootdo.ico --name=tootdo
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-windows
+          path: dist/
+  build-linux:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Create virtual environment
+        run: python -m venv venv
+
+      - name: Activate venv and install dependencies
+        run: |
+          source venv/bin/activate
+          python -m pip install --upgrade pip
+          pip install pyinstaller
+          pip install -r requirements.txt
+
+      - name: Build executable with PyInstaller
+        run: |
+          source venv/bin/activate
+          pyinstaller --onefile main.py --icon=tootdo.png --name=tootdo
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-linux
+          path: dist/
+  build-macos:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Create virtual environment
+        run: python -m venv venv
+
+      - name: Activate venv and install dependencies
+        run: |
+          .\venv\Scripts\Activate.ps1
+          python -m pip install --upgrade pip
+          pip install pyinstaller
+          pip install -r requirements.txt
+
+      - name: Convert .png icons to .icns
+        run: |
+          iconutil -c icns tootdo.iconset
+
+      - name: Build executable with PyInstaller
+        run: |
+          source venv/bin/activate
+          pyinstaller --onefile main.py --icon=tootdo.icns --name=tootdo
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-macos
+          path: dist/
+  release:
+    needs: [build-windows, build-linux, build-macos]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Windows artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-windows
+          path: ./dist/windows
+      - name: Download Linux artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-linux
+          path: ./dist/linux
+      - name: Download macOS artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-macos
+          path: ./dist/macos
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2.3.2
+        with:
+          tag_name: ${{ github.event.inputs.tag }}
+          name: Release ${{ github.event.inputs.release-name }}
+          body: ${{ github.event.inputs.body }}
+          files: |
+            dist/windows/tootdo.exe
+            dist/linux/tootdo
+            dist/macos/tootdo
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
