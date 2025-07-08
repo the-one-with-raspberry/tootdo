@@ -1,4 +1,4 @@
-name: Build Python app with PyInstaller
+name: build
 
 on:
   push:

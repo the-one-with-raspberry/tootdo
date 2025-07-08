@@ -1,4 +1,4 @@
-name: Build Python app with PyInstaller
+name: release
 
 on:
   workflow_dispatch:
@@ -37,7 +37,7 @@ jobs:
 
       - name: Build executable with PyInstaller
         run: |
-          source venv/bin/activate
+          .\venv\Scripts\Activate.ps1
           pyinstaller --onefile main.py --icon=tootdo.ico --name=tootdo
 
       - name: Upload artifact
@@ -92,7 +92,7 @@ jobs:
 
       - name: Activate venv and install dependencies
         run: |
-          .\venv\Scripts\Activate.ps1
+          source venv/bin/activate
           python -m pip install --upgrade pip
           pip install pyinstaller
           pip install -r requirements.txt
