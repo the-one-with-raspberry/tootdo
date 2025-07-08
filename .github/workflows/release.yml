@@ -135,7 +135,7 @@ jobs:
         uses: softprops/action-gh-release@v2.3.2
         with:
           tag_name: ${{ github.event.inputs.tag }}
-          name: Release ${{ github.event.inputs.release-name }}
+          name: ${{ github.event.inputs.release-name }}
           body: ${{ github.event.inputs.body }}
           files: |
             dist/windows/tootdo.exe
