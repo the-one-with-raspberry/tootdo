@@ -69,7 +69,7 @@ jobs:
       - name: Build executable with PyInstaller
         run: |
           source venv/bin/activate
-          pyinstaller --onefile main.py --icon=tootdo.png --name=tootdo
+          pyinstaller --onefile main.py --icon=tootdo.png --name=tootdo-linux
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -104,7 +104,7 @@ jobs:
       - name: Build executable with PyInstaller
         run: |
           source venv/bin/activate
-          pyinstaller --onefile main.py --icon=tootdo.icns --name=tootdo
+          pyinstaller --onefile main.py --icon=tootdo.icns --name=tootdo-macos
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -139,7 +139,7 @@ jobs:
           body: ${{ github.event.inputs.body }}
           files: |
             dist/windows/tootdo.exe
-            dist/linux/tootdo
-            dist/macos/tootdo
+            dist/linux/tootdo-linux
+            dist/macos/tootdo-macos
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
