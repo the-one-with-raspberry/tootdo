@@ -29,7 +29,7 @@ TODO_PATH = pathlib.Path(platformdirs.user_config_path("tootdo")).with_suffix(".
 
 if not os.path.isfile(TODO_PATH):
     print("Creating todo file!")
-    os.makedirs(os.path.dirname(TODO_PATH))
+    os.makedirs(os.path.dirname(TODO_PATH), exist_ok=True)
     touch(TODO_PATH)
 
 with open(TODO_PATH, 'r') as f:
@@ -149,7 +149,7 @@ match args.selected_action:
         if not "lists" in todo_dict:
             print("\x1b[31;91mERROR: No lists!\x1b[0m")
         if args.list_name in todo_dict['lists']:
-            if 0 <= args.task_number -1 <= len(todo_dict['lists'][args.list_name]) - 1:
+            if 0 <= args.task_number - 1 <= len(todo_dict['lists'][args.list_name]) - 1:
                 if todo_dict['lists'][args.list_name][args.task_number].endswith(chr(6)):
                     todo_dict['lists'][args.list_name][args.task_number] = todo_dict['lists'][args.list_name][args.task_number - 1][:-1]
                     commit()
